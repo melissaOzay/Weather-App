@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="vm"
+            type="com.example.myapplication.presentation.view_model.WeatherVM" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/blue"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCity"
+            android:layout_width="@dimen/_110sdp"
+            android:layout_height="@dimen/_19sdp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_22sdp"
+            android:drawableStart="@drawable/ic_location"
+            android:drawablePadding="4dp"
+            android:fontFamily="@font/ping_regular"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_17ssp"
+            tools:layout_editor_absoluteX="110dp"
+            tools:layout_editor_absoluteY="178dp"
+            tools:text="İstanbul" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv"
+            android:layout_width="@dimen/_110sdp"
+            android:layout_height="@dimen/_19sdp"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/ping_regular"
+            android:gravity="center"
+            android:text="TODAY"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_17ssp"
+            tools:text="TODAY" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivWeather"
+            android:layout_width="@dimen/_146sdp"
+            android:layout_height="@dimen/_146sdp"
+            android:layout_gravity="center"
+            android:layout_marginTop="80dp"
+            android:scaleType="fitXY"
+            tools:src="@drawable/ic_02d" />
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/white"
+            android:visibility="@{vm.progress ? View.VISIBLE:View.GONE}" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_dec"
+            android:layout_width="@dimen/_142sdp"
+            android:layout_height="@dimen/_18sdp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:fontFamily="@font/ping_regular"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_15ssp"
+            tools:text="Yağmurlu" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTemp"
+            android:layout_width="@dimen/_79sdp"
+            android:layout_height="@dimen/_53sdp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/_28sdp"
+            android:fontFamily="@font/intern_bold"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_44ssp"
+            tools:text="20" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_145sdp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_50sdp"
+            android:background="@drawable/bg_home_weather"
+            android:paddingVertical="30dp"
+            tools:listitem="@layout/item_weather" />
+
+    </LinearLayout>
+</layout>

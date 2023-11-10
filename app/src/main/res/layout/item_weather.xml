@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.material.card.MaterialCardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        card_view:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_12sdp"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvHour"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="@dimen/_17sdp"
+                android:text="00:00:"
+                android:textColor="@color/white_light"
+                android:textSize="@dimen/_14ssp"
+                android:textStyle="italic"
+                tools:ignore="MissingConstraints"
+                tools:textColor="@color/black" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivWeather"
+                android:layout_width="@dimen/_29sdp"
+                android:layout_height="@dimen/_29sdp"
+                android:layout_marginTop="@dimen/_11sdp"
+                android:layout_marginBottom="@dimen/_11sdp"
+                android:scaleType="fitXY"
+                tools:ignore="MissingConstraints"
+                tools:src="@drawable/ic_02d" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDec"
+                android:layout_width="@dimen/_29sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:fontFamily="@font/intern_bold"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_17ssp"
+                tools:ignore="MissingConstraints"
+                tools:text="18"
+                tools:textColor="@color/black" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>
