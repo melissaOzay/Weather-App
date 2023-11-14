@@ -1,8 +1,7 @@
-package com.example.myapplication.data.network
+package com.example.myapplication.data.di
 
-import com.example.myapplication.data.repository.WeatherRepository
+import com.example.myapplication.data.network.WeatherAPI
 import java.util.concurrent.TimeUnit
-import com.example.myapplication.data.repository.WeatherRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +14,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object WeatherModules {
+object WeatherNetworkModules {
     @Provides
     @Singleton
     fun providerGsonConverterFactory(): GsonConverterFactory {
@@ -45,10 +44,5 @@ object WeatherModules {
         return retrofit.create(WeatherAPI::class.java)
     }
 
-    @Provides
-    @Singleton
-    fun provideUserInfoRepository(apiService: WeatherAPI): WeatherRepository {
-        return WeatherRepositoryImpl(apiService)
 
-    }
 }

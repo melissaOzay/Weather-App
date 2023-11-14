@@ -18,33 +18,42 @@
         android:background="@color/blue"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvCity"
-            android:layout_width="@dimen/_110sdp"
-            android:layout_height="@dimen/_19sdp"
-            android:layout_marginStart="@dimen/_12sdp"
-            android:layout_marginTop="@dimen/_22sdp"
-            android:drawableStart="@drawable/ic_location"
-            android:drawablePadding="4dp"
-            android:fontFamily="@font/ping_regular"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_17ssp"
-            tools:layout_editor_absoluteX="110dp"
-            tools:layout_editor_absoluteY="178dp"
-            tools:text="İstanbul" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv"
-            android:layout_width="@dimen/_110sdp"
-            android:layout_height="@dimen/_19sdp"
-            android:layout_gravity="center"
-            android:layout_marginTop="24dp"
-            android:fontFamily="@font/ping_regular"
-            android:gravity="center"
-            android:text="TODAY"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_17ssp"
-            tools:text="TODAY" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvCity"
+                android:layout_width="@dimen/_110sdp"
+                android:layout_height="@dimen/_19sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_22sdp"
+                android:layout_marginRight="@dimen/_30sdp"
+                android:drawableStart="@drawable/ic_location"
+                android:drawablePadding="4dp"
+                android:fontFamily="@font/ping_regular"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_17ssp"
+                tools:layout_editor_absoluteX="110dp"
+                tools:layout_editor_absoluteY="178dp"
+                tools:text="İstanbul" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_today"
+                android:layout_width="@dimen/_110sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginLeft="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_22sdp"
+                android:backgroundTint="#466B9E"
+                android:fontFamily="@font/ping_regular"
+                android:gravity="center"
+                android:text="TODAY"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_8ssp"
+                tools:text="TODAY" />
+        </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivWeather"
@@ -92,8 +101,9 @@
             android:layout_gravity="center_vertical"
             android:layout_marginHorizontal="@dimen/_5sdp"
             android:layout_marginTop="@dimen/_50sdp"
+            android:foregroundGravity="center_vertical"
             android:background="@drawable/bg_home_weather"
-            android:paddingVertical="30dp"
+            android:paddingVertical="20dp"
             tools:listitem="@layout/item_weather" />
 
     </LinearLayout>

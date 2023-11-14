@@ -25,13 +25,13 @@ class WeatherActivity : AppCompatActivity() {
         val theme = super.getTheme()
         val c: Calendar = Calendar.getInstance()
         when (c.get(Calendar.HOUR_OF_DAY)) {
-            in 1..5 -> {
+            in 0..5 -> {
                 theme.applyStyle(R.style.Base_Theme_Dark_Blue, true)
             }
             in 6..17 -> {
                 theme.applyStyle(R.style.Base_Theme_Blue, true)
             }
-            in 18..24 -> {
+            in 18..23 -> {
                 theme.applyStyle(R.style.Base_Theme_Dark_Blue, true)
             }
 

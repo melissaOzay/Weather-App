@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.card.MaterialCardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="5dp"
-        card_view:cardCornerRadius="10dp">
+        android:layout_width="@dimen/_64sdp"
+        android:layout_height="@dimen/_96sdp"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_2sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        card_view:cardCornerRadius="10dp"
+        card_view:cardElevation="2dp"
+        card_view:strokeWidth="0dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_12sdp"
+            android:id="@+id/linear"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/blue"
+            android:gravity="center"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvHour"
                 android:layout_width="@dimen/_36sdp"
                 android:layout_height="@dimen/_17sdp"
-                android:text="00:00:"
                 android:textColor="@color/white_light"
                 android:textSize="@dimen/_14ssp"
                 android:textStyle="italic"
                 tools:ignore="MissingConstraints"
+                tools:text="00:00:"
                 tools:textColor="@color/black" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -46,7 +49,7 @@
                 android:layout_height="@dimen/_20sdp"
                 android:fontFamily="@font/intern_bold"
                 android:gravity="center"
-                android:textColor="@color/white"
+                android:textColor="@color/white_light"
                 android:textSize="@dimen/_17ssp"
                 tools:ignore="MissingConstraints"
                 tools:text="18"

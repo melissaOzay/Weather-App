@@ -1,51 +1,56 @@
 package com.example.myapplication.presentation.adapter
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.data.model.EightHourWeatherEntity
 import com.example.myapplication.databinding.ItemWeatherBinding
+import com.example.myapplication.domain.model.WeatherEightHourData
 import com.example.myapplication.presentation.adapter.*
 import com.example.myapplication.presentation.adapter.`interface`.WeatherAdapterListener
 import com.example.myapplication.util.ConvertDateFormat
 import com.example.myapplication.util.WeatherIconMapper
+import kotlin.properties.Delegates
 
 
 class WeatherAdapter(private val listener: WeatherAdapterListener) :
     RecyclerView.Adapter<WeatherAdapter.CompanyViewHolder>() {
 
-    private var items = ArrayList<EightHourWeatherEntity.WeatherItem>()
+    private var items = WeatherEightHourData(emptyList())
     private lateinit var binding: ItemWeatherBinding
-    fun setListData(items: List<EightHourWeatherEntity.WeatherItem>) {
-        this.items = ArrayList(items)
+     var row_index = -1
+    var clickButton=false
+
+    fun setListData(items: WeatherEightHourData) {
+        this.items = items
     }
 
     class CompanyViewHolder(private val binding: ItemWeatherBinding) :
         RecyclerView.ViewHolder(binding.root) {
         private val name = binding.tvDec
         private val iv = binding.ivWeather
-        private val hour = binding.tvHour///
-        var cardView = binding.cardView//
+        private val hour = binding.tvHour
+        val cardView = binding.linear
+        lateinit var incomingDate: String
+        var tempToDegree by Delegates.notNull<Int>()
+        var icon by Delegates.notNull<Int>()
+        lateinit var desc: String
 
         @SuppressLint("SetTextI18n")
-        fun bindItems(item: EightHourWeatherEntity.WeatherItem, listener: WeatherAdapterListener) {
-            val icon: Int = WeatherIconMapper.getIcon(item.weather[0].icon)
+        fun bindItems(item: WeatherEightHourData, position: Int) {
+            icon = WeatherIconMapper.getIcon(item.list[position].weather[0].icon)
             iv.setImageResource(icon)
-            val temp = item.main.temp
-            val tempToDegree = (temp - 273.15).toInt()
+            val temp = item.list[position].main.temp
+            tempToDegree = (temp - 273.15).toInt()
             name.text = "$tempToDegree°"
 
-            val date = item.dt_txt
-            val incomingDate = ConvertDateFormat.parseDateFormat(date)
+            val date = item.list[position].dt_txt
+            desc = item.list[position].weather[0].description.replaceFirstChar { it.uppercase() }
+            incomingDate = ConvertDateFormat.parseDateFormat(date)
             hour.text = incomingDate
-            itemView.setOnClickListener {
-                listener.clickItem(incomingDate, tempToDegree, icon)
-
-            }
-
         }
     }
 
@@ -57,13 +62,26 @@ class WeatherAdapter(private val listener: WeatherAdapterListener) :
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: CompanyViewHolder, position: Int) {
         if (position < 8) {
-            holder.bindItems(items[position], listener)
-//
-
+            holder.bindItems(items,position)
+            holder.itemView.setOnClickListener {
+                row_index = position
+                listener.clickItem(
+                    holder.incomingDate,
+                    holder.tempToDegree,
+                    holder.icon,
+                    holder.desc
+                )
+                notifyDataSetChanged()
+            }
+            if (row_index == position) {
+                holder.cardView.setBackgroundColor(Color.parseColor("#466B9E"))
+            } else {
+                holder.cardView.setBackgroundColor(Color.parseColor("#BCE8FF"))
+            }
         }
     }
 
     override fun getItemCount(): Int {
-        return minOf(items.size, 8)
+        return minOf(items.list.size, 8)
     }
 }

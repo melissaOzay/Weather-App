@@ -17,6 +17,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -41,15 +43,15 @@ class WeatherFragment : Fragment(), LocationListener {
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 2
     private lateinit var binding: FragmentWeatherBinding
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private val viewModel by lazy {
         ViewModelProvider(this)[WeatherVM::class.java]
     }
     private val adapter by lazy {
         WeatherAdapter(object : WeatherAdapterListener {
-            override fun clickItem(hour: String, degree: Int, image: Int) {
-                change(hour, degree, image)
+            override fun clickItem(hour: String, degree: Int, image: Int, desc: String) {
+                change(hour, degree, image, desc)
             }
-
         })
     }
 
@@ -64,8 +66,17 @@ class WeatherFragment : Fragment(), LocationListener {
             lifecycleOwner = this@WeatherFragment
         }
         locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
+        requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                getLocation()
+            }
+        }
         changeBackgroundColor()
+        getWeatherOneDay()
+        getEightHourWeather()
+        clickTodayButton()
         return binding.root
     }
 
@@ -86,13 +97,21 @@ class WeatherFragment : Fragment(), LocationListener {
         } else {
             getLocation()
         }
+
+    }
+    private fun clickTodayButton(){
+        binding.btToday.setOnClickListener {
+            getWeatherOneDay()
+            adapter.row_index=-1
+            adapter.notifyDataSetChanged()
+        }
     }
 
 
     private fun changeBackgroundColor() {
         val c: Calendar = Calendar.getInstance()
         when (c.get(Calendar.HOUR_OF_DAY)) {
-            in 1..5 -> {
+            in 0..5 -> {
                 binding.linear.setBackgroundColor(Color.parseColor("#1D2837"))
             }
 
@@ -101,19 +120,20 @@ class WeatherFragment : Fragment(), LocationListener {
 
             }
 
-            in 18..24 -> {
+            in 18..23 -> {
                 binding.linear.setBackgroundColor(Color.parseColor("#1D2837"))
             }
         }
     }
 
-    private fun change(hour: String, degree: Int, image: Int) {
+    private fun change(hour: String, degree: Int, image: Int, desc: String) {
         if (hour.isEmpty() && degree.toString().isEmpty() && image.toString().isEmpty()) {
             getWeatherOneDay()
         } else {
             with(binding) {
                 ivWeather.setImageResource(image)
                 tvTemp.text = "$degree°"
+                tvDec.text = desc
             }
         }
     }
@@ -170,8 +190,7 @@ class WeatherFragment : Fragment(), LocationListener {
             getWeatherOneDay(location.latitude, location.longitude)
             getEightHourWeather(location.latitude, location.longitude)
         }
-        getWeatherOneDay()
-        getEightHourWeather()
+
 
     }
 
@@ -209,7 +228,7 @@ class WeatherFragment : Fragment(), LocationListener {
                     rv.layoutManager =
                         LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                 }
-                adapter.setListData(data.list)
+                adapter.setListData(data)
 
             } catch (e: JsonSyntaxException) {
                 errorMessage()
@@ -219,18 +238,5 @@ class WeatherFragment : Fragment(), LocationListener {
         })
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == locationPermissionCode) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLocation()
-            }
-
-        }
-    }
 
 }
