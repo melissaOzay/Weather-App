@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
@@ -23,7 +22,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
@@ -49,7 +47,8 @@ class WeatherFragment : Fragment(), LocationListener {
     }
     private val adapter by lazy {
         WeatherAdapter(object : WeatherAdapterListener {
-            override fun clickItem(hour: String, degree: Int, image: Int, desc: String) {
+            override fun clickItem(position: Int, hour: String, degree: Int, image: Int, desc: String) {
+               viewModel.selectedItem(position)
                 change(hour, degree, image, desc)
             }
         })
@@ -65,6 +64,21 @@ class WeatherFragment : Fragment(), LocationListener {
             vm = viewModel
             lifecycleOwner = this@WeatherFragment
         }
+        initAdapter()
+        permissionLocation()
+        changeBackgroundColor()
+        getWeatherOneDay()
+        clickTodayButton()
+        getEightHourWeather()
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        gpsControl()
+    }
+
+    private fun permissionLocation() {
         locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         requestPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -73,21 +87,18 @@ class WeatherFragment : Fragment(), LocationListener {
                 getLocation()
             }
         }
-        changeBackgroundColor()
-        getWeatherOneDay()
-        getEightHourWeather()
-        clickTodayButton()
-        return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        val gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    private fun gpsControl() {
+        val gpsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         if (!gpsEnabled) {
+
+            // Show warning to user if GPS is not enabled
             val dialogBuilder = AlertDialog.Builder(this@WeatherFragment.requireContext())
             dialogBuilder.setMessage(resources.getString(R.string.location_service))
                 .setCancelable(false)
                 .setPositiveButton(resources.getString(R.string.ok)) { _, _ ->
+                    // Redirect user to GPS settings
                     val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                     requireActivity().startActivity(intent)
                 }
@@ -97,13 +108,12 @@ class WeatherFragment : Fragment(), LocationListener {
         } else {
             getLocation()
         }
-
     }
-    private fun clickTodayButton(){
+
+    private fun clickTodayButton() {
         binding.btToday.setOnClickListener {
             getWeatherOneDay()
-            adapter.row_index=-1
-            adapter.notifyDataSetChanged()
+            viewModel.selectedItem(-1)
         }
     }
 
@@ -112,16 +122,33 @@ class WeatherFragment : Fragment(), LocationListener {
         val c: Calendar = Calendar.getInstance()
         when (c.get(Calendar.HOUR_OF_DAY)) {
             in 0..5 -> {
-                binding.linear.setBackgroundColor(Color.parseColor("#1D2837"))
+                binding.linear.setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.dark_blue
+                    )
+                )
+
             }
 
             in 6..17 -> {
-                binding.linear.setBackgroundColor(Color.parseColor("#BCE8FF"))
+                binding.linear.setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.blue
+                    )
+                )
 
             }
 
             in 18..23 -> {
-                binding.linear.setBackgroundColor(Color.parseColor("#1D2837"))
+                binding.linear.setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.dark_blue
+                    )
+                )
+
             }
         }
     }
@@ -132,32 +159,35 @@ class WeatherFragment : Fragment(), LocationListener {
         } else {
             with(binding) {
                 ivWeather.setImageResource(image)
-                tvTemp.text = "$degree°"
+                "$degree°".let { tvTemp.text = it }
                 tvDec.text = desc
             }
         }
     }
 
     private fun getLocation() {
+        // Location permission control
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5f, this)
-
+            // Request location updates if location permission is granted
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 5f, this)
 
         } else {
+            // If location permission is not granted
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     requireActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             ) {
-
+                // If the user has previously denied permission, show a warning explaining why permission is requested
                 val dialogBuilder = AlertDialog.Builder(this@WeatherFragment.requireContext())
                 dialogBuilder.setMessage(resources.getString(R.string.device_location))
                     .setCancelable(false)
                     .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
+                        // Redirect user to application settings
                         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                         intent.data = Uri.parse("package:com.example.myapplication")
                         startActivity(intent)
@@ -167,6 +197,7 @@ class WeatherFragment : Fragment(), LocationListener {
                 alert.setTitle(resources.getString(R.string.location_permission))
                 alert.show()
             } else {
+                // If permission is requested for the first time, request location permission
                 requestLocationPermission()
             }
         }
@@ -182,7 +213,7 @@ class WeatherFragment : Fragment(), LocationListener {
 
     override fun onLocationChanged(location: Location) {
         val geoCoder = Geocoder(requireContext(), Locale.getDefault())
-        val address = geoCoder.getFromLocation(location.latitude, location.longitude, 3)
+        val address = geoCoder.getFromLocation(location.latitude, location.longitude, 1)
 
         val cityName = address?.get(0)?.adminArea
         binding.tvCity.text = cityName
@@ -195,7 +226,7 @@ class WeatherFragment : Fragment(), LocationListener {
     }
 
     private fun getWeatherOneDay() {
-        viewModel.weatherOneDayData.observe(viewLifecycleOwner, Observer { data ->
+        viewModel.weatherOneDayData.observe(viewLifecycleOwner) { data ->
             try {
                 val icon: Int = WeatherIconMapper.getIcon(data?.weather?.get(0)?.icon.toString())
                 val temp = data.main.temp
@@ -204,38 +235,42 @@ class WeatherFragment : Fragment(), LocationListener {
                     tvDec.text =
                         data?.weather?.get(0)?.description?.replaceFirstChar { it.uppercase() }
                     ivWeather.setImageResource(icon)
-                    tvTemp.text = "$tempToDegree°"
+                    "$tempToDegree°".let {
+                        tvTemp.text = it
+                    }
                 }
             } catch (e: JsonSyntaxException) {
                 errorMessage()
                 Log.e("Error", e.toString())
             }
-        })
+        }
     }
 
     private fun errorMessage() {
-        viewModel.failure.observe(viewLifecycleOwner, Observer {
+        viewModel.failure.observe(viewLifecycleOwner) {
             Toast.makeText(requireContext(), it.toString(), Toast.LENGTH_SHORT).show()
-        })
+        }
     }
 
-    //eight hour weather
     private fun getEightHourWeather() {
-        viewModel.weatherEightHourData.observe(viewLifecycleOwner, Observer { data ->
+        viewModel.weatherEightHourData.observe(viewLifecycleOwner) { data ->
             try {
-                with(binding) {
-                    rv.adapter = adapter
-                    rv.layoutManager =
-                        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                }
-                adapter.setListData(data)
-
+                adapter.submitList(data.toList())
+                adapter.notifyDataSetChanged()
             } catch (e: JsonSyntaxException) {
                 errorMessage()
                 Log.e("Error", e.toString())
 
             }
-        })
+        }
+    }
+
+    private fun initAdapter(){
+        with(binding) {
+            rv.adapter = adapter
+            rv.layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        }
     }
 
 

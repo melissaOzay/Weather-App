@@ -1,8 +1,15 @@
 package com.example.myapplication.domain.model
 
-import com.example.myapplication.data.model.Weather
-import com.example.myapplication.data.model.Main
 
 data class WeatherOneDayData(
-    val weather: List<Weather>,
-    val main: Main)
+    val main: MainOneDayEntity,
+    val weather: List<WeatherOneDayEntity>
+)
+
+data class MainOneDayEntity(val temp: Double)
+
+data class WeatherOneDayEntity(
+    val main: String,
+    val description: String,
+    val icon: String
+)

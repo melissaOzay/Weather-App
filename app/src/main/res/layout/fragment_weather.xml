@@ -97,13 +97,13 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_145sdp"
+            android:layout_height="@dimen/_140sdp"
             android:layout_gravity="center_vertical"
             android:layout_marginHorizontal="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_50sdp"
+            android:layout_marginTop="@dimen/_60sdp"
             android:foregroundGravity="center_vertical"
             android:background="@drawable/bg_home_weather"
-            android:paddingVertical="20dp"
+            android:paddingVertical="24dp"
             tools:listitem="@layout/item_weather" />
 
     </LinearLayout>

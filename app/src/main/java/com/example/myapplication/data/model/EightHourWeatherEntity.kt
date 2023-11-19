@@ -1,14 +1,18 @@
 package com.example.myapplication.data.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-data class WeatherResponse(
+@Parcelize
+data class WeatherEightHourResponse(
     val cod: String,
     val message: Int,
     val cnt: Int,
     val list: List<WeatherItem>,
     val city: City
-)
+) : Parcelable
 
+@Parcelize
 data class WeatherItem(
     val dt: Long,
     val main: MainInfo,
@@ -20,8 +24,9 @@ data class WeatherItem(
     val rain: RainInfo?,
     val sys: SysInfo,
     val dt_txt: String
-)
+) : Parcelable
 
+@Parcelize
 data class MainInfo(
     val temp: Double,
     val feels_like: Double,
@@ -32,33 +37,39 @@ data class MainInfo(
     val grnd_level: Int,
     val humidity: Int,
     val temp_kf: Double
-)
+) : Parcelable
 
+@Parcelize
 data class WeatherInfo(
     val id: Int,
     val main: String,
     val description: String,
     val icon: String
-)
+) : Parcelable
 
+@Parcelize
 data class CloudsInfo(
     val all: Int
-)
+) : Parcelable
 
+@Parcelize
 data class WindInfo(
     val speed: Double,
     val deg: Int,
     val gust: Double
-)
+) : Parcelable
 
+@Parcelize
 data class RainInfo(
     val `3h`: Double
-)
+) : Parcelable
 
+@Parcelize
 data class SysInfo(
     val pod: String
-)
+) : Parcelable
 
+@Parcelize
 data class City(
     val id: Int,
     val name: String,
@@ -68,10 +79,11 @@ data class City(
     val timezone: Int,
     val sunrise: Long,
     val sunset: Long
-)
+) : Parcelable
 
+@Parcelize
 data class Coord(
     val lat: Double,
     val lon: Double
-)
+) : Parcelable
 

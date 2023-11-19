@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.myapplication.domain.WeatherEightHourUseCase
 import com.example.myapplication.domain.WeatherOneDayUseCase
 import com.example.myapplication.domain.mapper.toWeatherData
+import com.example.myapplication.domain.mapper.toWeatherDataList
 import com.example.myapplication.domain.model.WeatherEightHourData
 import com.example.myapplication.domain.model.WeatherOneDayData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,8 +26,10 @@ class WeatherVM @Inject constructor(
     private val _weatherOneDayData = MutableLiveData<WeatherOneDayData>()
     val weatherOneDayData: LiveData<WeatherOneDayData> get() = _weatherOneDayData
 
-    private val _weatherEightHourData = MutableLiveData<WeatherEightHourData>()
-    val weatherEightHourData: LiveData<WeatherEightHourData> get() = _weatherEightHourData
+    private val _weatherEightHourData = MutableLiveData<List<WeatherEightHourData>>()
+    val weatherEightHourData: LiveData<List<WeatherEightHourData>> get() = _weatherEightHourData
+
+    private val newItems = arrayListOf<WeatherEightHourData>()
 
     private val _progress = MutableLiveData<Boolean>()
     val progress: LiveData<Boolean> get() = _progress
@@ -48,7 +51,7 @@ class WeatherVM @Inject constructor(
                 .map { it.toWeatherData() }
                 .subscribe({ response ->
                     _progress.value = false
-                    _weatherOneDayData.postValue(response)
+                    _weatherOneDayData.value = response
                 }, {
                     _failure.postValue(it.toString())
                 })
@@ -60,9 +63,12 @@ class WeatherVM @Inject constructor(
             weatherFiveUseCase.loadData(lat, lon)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map { it.toWeatherData() }
+                .map { it ->
+                    it.list.map { it.toWeatherDataList() }
+                }
                 .subscribe({ response ->
-                    _weatherEightHourData.postValue(response)
+                    newItems.addAll(response.take(8))
+                    _weatherEightHourData.value = response.take(8)
 
                 }, {
                     _failure.postValue(it.toString())
@@ -74,4 +80,20 @@ class WeatherVM @Inject constructor(
         super.onCleared()
         compositeDisposable.clear()
     }
+
+    fun selectedItem(position: Int) {
+        newItems.filter {
+            it.isSelected
+        }.apply {
+            this.map {
+                it.isSelected = false
+            }
+        }
+        if (position != -1) {
+            newItems[position].isSelected = true
+        }
+        _weatherEightHourData.value = newItems.toMutableList()
+
+    }
+
 }

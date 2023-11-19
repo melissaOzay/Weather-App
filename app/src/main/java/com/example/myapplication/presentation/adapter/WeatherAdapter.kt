@@ -1,15 +1,15 @@
 package com.example.myapplication.presentation.adapter
 
-import android.annotation.SuppressLint
-import android.graphics.Color
-import android.os.Build
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.R
 import com.example.myapplication.databinding.ItemWeatherBinding
 import com.example.myapplication.domain.model.WeatherEightHourData
-import com.example.myapplication.presentation.adapter.*
 import com.example.myapplication.presentation.adapter.`interface`.WeatherAdapterListener
 import com.example.myapplication.util.ConvertDateFormat
 import com.example.myapplication.util.WeatherIconMapper
@@ -17,40 +17,60 @@ import kotlin.properties.Delegates
 
 
 class WeatherAdapter(private val listener: WeatherAdapterListener) :
-    RecyclerView.Adapter<WeatherAdapter.CompanyViewHolder>() {
+    ListAdapter<WeatherEightHourData, WeatherAdapter.CompanyViewHolder>(WeatherDiffUtil()) {
 
-    private var items = WeatherEightHourData(emptyList())
     private lateinit var binding: ItemWeatherBinding
-     var row_index = -1
-    var clickButton=false
 
-    fun setListData(items: WeatherEightHourData) {
-        this.items = items
-    }
-
-    class CompanyViewHolder(private val binding: ItemWeatherBinding) :
+    class CompanyViewHolder(binding: ItemWeatherBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        private val name = binding.tvDec
-        private val iv = binding.ivWeather
-        private val hour = binding.tvHour
-        val cardView = binding.linear
-        lateinit var incomingDate: String
-        var tempToDegree by Delegates.notNull<Int>()
+        private val tvDec = binding.tvDec
+        private val ivWeather = binding.ivWeather
+        private val tvHour = binding.tvHour
+        private val cardView = binding.linear
+        private lateinit var incomingDate: String
+        private var tempToDegree by Delegates.notNull<Int>()
         var icon by Delegates.notNull<Int>()
-        lateinit var desc: String
+        private lateinit var desc: String
+        private val context: Context = itemView.context
 
-        @SuppressLint("SetTextI18n")
-        fun bindItems(item: WeatherEightHourData, position: Int) {
-            icon = WeatherIconMapper.getIcon(item.list[position].weather[0].icon)
-            iv.setImageResource(icon)
-            val temp = item.list[position].main.temp
+
+        fun bindItems(item: WeatherEightHourData, listener: WeatherAdapterListener) {
+            icon = WeatherIconMapper.getIcon(item.weather[0].icon)
+            ivWeather.setImageResource(icon)
+            val temp = item.main.temp
             tempToDegree = (temp - 273.15).toInt()
-            name.text = "$tempToDegree°"
+            "$tempToDegree°".let {
+                tvDec.text = it
+            }
 
-            val date = item.list[position].dt_txt
-            desc = item.list[position].weather[0].description.replaceFirstChar { it.uppercase() }
+            val date = item.dt_txt
+            desc = item.weather[0].description.replaceFirstChar { it.uppercase() }
             incomingDate = ConvertDateFormat.parseDateFormat(date)
-            hour.text = incomingDate
+            tvHour.text = incomingDate
+            itemView.setOnClickListener {
+                listener.clickItem(
+                    adapterPosition,
+                    incomingDate,
+                    tempToDegree,
+                    icon,
+                    desc
+                )
+            }
+            if (item.isSelected) {
+                cardView.setBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.queen_blue
+                    )
+                )
+            } else {
+                cardView.setBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.medium_blue
+                    )
+                )
+            }
         }
     }
 
@@ -59,29 +79,26 @@ class WeatherAdapter(private val listener: WeatherAdapterListener) :
         return CompanyViewHolder(binding)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: CompanyViewHolder, position: Int) {
-        if (position < 8) {
-            holder.bindItems(items,position)
-            holder.itemView.setOnClickListener {
-                row_index = position
-                listener.clickItem(
-                    holder.incomingDate,
-                    holder.tempToDegree,
-                    holder.icon,
-                    holder.desc
-                )
-                notifyDataSetChanged()
-            }
-            if (row_index == position) {
-                holder.cardView.setBackgroundColor(Color.parseColor("#466B9E"))
-            } else {
-                holder.cardView.setBackgroundColor(Color.parseColor("#BCE8FF"))
-            }
+        holder.bindItems(getItem(position), listener)
+    }
+
+    private class WeatherDiffUtil : DiffUtil.ItemCallback<WeatherEightHourData>() {
+
+        override fun areContentsTheSame(
+            oldItem: WeatherEightHourData,
+            newItem: WeatherEightHourData
+        ): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areItemsTheSame(
+            oldItem: WeatherEightHourData,
+            newItem: WeatherEightHourData
+        ): Boolean {
+            return oldItem == newItem
         }
     }
 
-    override fun getItemCount(): Int {
-        return minOf(items.list.size, 8)
-    }
+
 }

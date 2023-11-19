@@ -6,9 +6,9 @@
         android:id="@+id/card_view"
         android:layout_width="@dimen/_64sdp"
         android:layout_height="@dimen/_96sdp"
-        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_6sdp"
+        android:layout_marginRight="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_5sdp"
-        android:layout_marginRight="@dimen/_2sdp"
         android:layout_marginBottom="@dimen/_5sdp"
         card_view:cardCornerRadius="10dp"
         card_view:cardElevation="2dp"
@@ -18,7 +18,7 @@
             android:id="@+id/linear"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/blue"
+            android:background="#72B6DA"
             android:gravity="center"
             android:orientation="vertical">
 

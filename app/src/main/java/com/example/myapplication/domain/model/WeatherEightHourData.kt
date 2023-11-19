@@ -1,6 +1,17 @@
 package com.example.myapplication.domain.model
 
-import com.example.myapplication.data.model.WeatherItem
-
 data class WeatherEightHourData(
-    val list: List<WeatherItem>)
+    val dt: Long,
+    val main: MainEntity,
+    val weather: List<WeatherEntity>,
+    val dt_txt: String,
+    var isSelected: Boolean = false
+)
+
+data class MainEntity(val temp: Double)
+
+data class WeatherEntity(
+    val main: String,
+    val description: String,
+    val icon: String
+)
