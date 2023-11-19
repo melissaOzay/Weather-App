@@ -13,8 +13,8 @@ When requesting these services,
                     "proguard-rules.pro"
             )
             buildTypes.each {
-                it.buildConfigField 'String', 'API_KEY', '"075c20ed0714a2323e3ccce70890497f"'
-                it.resValue 'string', 'API_KEY', '"075c20ed0714a2323e3ccce70890497f"'
+                it.buildConfigField 'String', 'API_KEY', '"0"'
+                it.resValue 'string', 'API_KEY', '"0"'
             }
         }
 
