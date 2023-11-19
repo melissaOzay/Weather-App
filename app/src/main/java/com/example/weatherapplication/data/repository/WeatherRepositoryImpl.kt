@@ -11,14 +11,14 @@ class WeatherRepositoryImpl @Inject constructor(private val weatherApiService: W
     WeatherRepository {
 
     override fun getOneDayWeather(lat: Double, lon: Double): Single<WeatherOneDayResponse> {
-        return weatherApiService.getOneDayWeather(lat, lon, BuildConfig.API_NAME)
+        return weatherApiService.getOneDayWeather(lat, lon, BuildConfig.API_KEY)
     }
 
     override fun getEightHourWeather(
         lat: Double,
         lon: Double
     ): Single<WeatherEightHourResponse> {
-        return weatherApiService.getEightHourWeather(lat, lon, BuildConfig.API_NAME)
+        return weatherApiService.getEightHourWeather(lat, lon, BuildConfig.API_KEY)
     }
 
 }
