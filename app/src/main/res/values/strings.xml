@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">My Application</string>
     <string name="device_location">Allow device location so you can see the weather</string>
     <string name="location_permission">Location Permission</string>
     <string name="yes">yes</string>
     <string name="location_service">Location service is off. Please open.</string>
     <string name="gbs_disabled">GPS disabled</string>
     <string name="ok">Ok</string>
+    <string name="app_name">Weather App</string>
 </resources>

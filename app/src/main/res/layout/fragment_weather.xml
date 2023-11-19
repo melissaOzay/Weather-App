@@ -8,7 +8,7 @@
 
         <variable
             name="vm"
-            type="com.example.myapplication.presentation.view_model.WeatherVM" />
+            type="com.example.weatherapplication.presentation.view_model.WeatherVM" />
     </data>
 
     <LinearLayout
