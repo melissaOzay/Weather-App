@@ -68,4 +68,4 @@ When requesting these services,
 
 ## 📷 Pictures related to the application are located below
 <a href="#"><img width="100%" height="auto" src="https://github.com/melissaOzay/Weather-App/assets/106618067/d9eb4a27-4efe-4118-8d28-f0dd15f3a326" height="400px"/></a>
-
+[app-debug.apk](..%2F..%2FDesktop%2Fapp-debug.apk)
